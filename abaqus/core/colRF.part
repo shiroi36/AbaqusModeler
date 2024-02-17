@@ -1,0 +1,300 @@
+
+#-------------------------------------------------------------------------------------------
+#パートモジュール
+#スケッチの単なる押し出し。ここではtest00スケッチ3000mm押し出している。
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', sheetSize=200.0)
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=STANDALONE)
+s.sketchOptions.setValues(gridOrigin=(0.0, 0.0))
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches[s0])
+session.viewports['Viewport: 1'].view.fitView()
+p = mdb.models['Model-1'].Part(name=cpartname, dimensionality=THREE_D, 
+type=DEFORMABLE_BODY)
+p = mdb.models['Model-1'].parts[cpartname]
+p.BaseShellExtrude(sketch=s, depth=lcc)
+s.unsetPrimaryObject()
+p = mdb.models['Model-1'].parts[cpartname]
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+del mdb.models['Model-1'].sketches['__profile__']
+
+
+
+#データム平面の使用
+p = mdb.models['Model-1'].parts[cpartname]
+v1 = p.vertices
+p.DatumPlaneByThreePoints(point1=v1[10], point2=v1[12], point3=v1[13])
+
+p = mdb.models['Model-1'].parts[cpartname]
+v, e = p.vertices, p.edges
+p.DatumPlaneByThreePoints(point1=v[8], point2=p.InterestingPoint(edge=e[10], 
+rule=MIDDLE), point3=p.InterestingPoint(edge=e[14], rule=MIDDLE))
+p = mdb.models['Model-1'].parts[cpartname]
+v1, e = p.vertices, p.edges
+p.DatumAxisByTwoPoint(point1=v1[8], point2=p.InterestingPoint(edge=e[10], 
+rule=MIDDLE))
+p = mdb.models['Model-1'].parts[cpartname]
+v2, e1 = p.vertices, p.edges
+p.DatumAxisByTwoPoint(point1=v2[6], point2=v2[2])
+p = mdb.models['Model-1'].parts[cpartname]
+v1 = p.vertices
+p.DatumAxisByTwoPoint(point1=v1[10], point2=v1[11])
+p = mdb.models['Model-1'].parts[cpartname]
+v2 = p.vertices
+p.DatumAxisByTwoPoint(point1=v2[5], point2=v2[1])
+#データムポイント
+p = mdb.models['Model-1'].parts[cpartname]
+p.DatumPointByCoordinate(coords=(0.0, 0.0, 0.0))
+p = mdb.models['Model-1'].parts[cpartname]
+p.DatumPointByCoordinate(coords=(0.0, 0.0, lcc))
+
+
+#フランジ面の穴あけ
+p = mdb.models['Model-1'].parts[cpartname]
+d1 = p.datums
+t = p.MakeSketchTransform(sketchPlane=d1[3], sketchUpEdge=d1[4], 
+sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(0.0, h/2.0, (lcc)/2.0))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=7325.0, gridSpacing=183.12, transform=t)
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts[cpartname]
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+p = mdb.models['Model-1'].parts[cpartname]
+d2 = p.datums
+t = p.MakeSketchTransform(sketchPlane=d2[3], sketchUpEdge=d2[6], 
+sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(0.0, h/2.0, (lcc)/2.0))
+s1 = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=7325.0, gridSpacing=183.12, transform=t)
+g, v, d, c = s1.geometry, s1.vertices, s1.dimensions, s1.constraints
+s1.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts[cpartname]
+p.projectReferencesOntoSketch(sketch=s1, filter=COPLANAR_EDGES)
+s1.sketchOptions.setValues(gridOrigin=(0.0, -(lcc)/2.0))
+s1.retrieveSketch(sketch=mdb.models['Model-1'].sketches['c01'])
+p = mdb.models['Model-1'].parts[cpartname]
+d1 = p.datums
+p.CutExtrude(sketchPlane=d1[3], sketchUpEdge=d1[6], sketchPlaneSide=SIDE1, 
+sketchOrientation=RIGHT, sketch=s1, flipExtrudeDirection=ON)
+s1.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+
+
+#ウェブ面の穴あけ
+p = mdb.models['Model-1'].parts[cpartname]
+d1 = p.datums
+t = p.MakeSketchTransform(sketchPlane=d1[2], sketchUpEdge=d1[6], 
+sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(bc/2, 0, 0))
+s1 = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=7325.0, gridSpacing=183.12, transform=t)
+g, v, d, c = s1.geometry, s1.vertices, s1.dimensions, s1.constraints
+s1.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts[cpartname]
+p.projectReferencesOntoSketch(sketch=s1, filter=COPLANAR_EDGES)
+s1.retrieveSketch(sketch=mdb.models['Model-1'].sketches[s3])
+p = mdb.models['Model-1'].parts[cpartname]
+d2 = p.datums
+p.CutExtrude(sketchPlane=d2[2], sketchUpEdge=d2[6], sketchPlaneSide=SIDE1, 
+sketchOrientation=RIGHT, sketch=s1, flipExtrudeDirection=OFF)
+s1.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+
+
+#ウェブのスケッチ
+p = mdb.models['Model-1'].parts[cpartname]
+f, e, d = p.faces, p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=f[0], sketchUpEdge=d[6], 
+sketchPlaneSide=SIDE1, origin=(0.0, 0.0, lcc/2.0))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=6092.07, gridSpacing=152.3, transform=t)
+g, v, d1, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts[cpartname]
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches[s4])
+session.viewports['Viewport: 1'].view.fitView()
+s.rotate(centerPoint=(0.0, 0.0), angle=180.0, objectList=(g[28], g[29], g[30], g[31],g[32],g[33]))
+s.move(vector=(0.0, lcc/2.0), objectList=(g[28], g[29], g[30], g[31],g[32],g[33]))
+p = mdb.models['Model-1'].parts[cpartname]
+f = p.faces
+pickedFaces = f.getSequenceFromMask(mask=('[#1 ]', ), )
+e1, d2 = p.edges, p.datums
+p.PartitionFaceBySketch(sketchUpEdge=d2[6], faces=pickedFaces, sketch=s)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+
+
+
+
+#フランジのスケッチ
+p = mdb.models['Model-1'].parts[cpartname]
+f, e, d = p.faces, p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=d[3], sketchUpEdge=d[4], 
+sketchPlaneSide=SIDE2, origin=(0.0, h/2, lcc*0.5))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=7325.0, gridSpacing=183.12, transform=t)
+g, v, d1, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts[cpartname]
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches['c02'])
+session.viewports['Viewport: 1'].view.fitView()
+s.move(vector=(0.0, -lcc*0.5), objectList=(g[62], g[63], g[64], g[65], g[66], 
+g[67], g[68], g[69], g[70], g[71], g[72], g[73], g[74], g[75], g[76], 
+g[77], g[78], g[79], g[80], g[81], g[82], g[83], g[84], g[85], g[86], 
+g[87], g[88], g[89], g[90], g[91], g[92], g[93], g[94], g[95], g[96], 
+g[97], g[98], g[99], g[100], g[101], g[102], g[103], g[104], g[105], 
+g[106], g[107]))
+p = mdb.models['Model-1'].parts[cpartname]
+f = p.faces
+pickedFaces = f.getSequenceFromMask(mask=('[#3fff ]', ), )
+f1, e1, d2 = p.faces, p.edges, p.datums
+p.PartitionFaceBySketchThruAll(sketchPlane=d2[3], sketchUpEdge=d2[4], 
+faces=pickedFaces, sketchPlaneSide=SIDE2, sketch=s)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+
+#-------------------------------------------------------------------------------------------
+#材料の定義。これはSM490材を模したもの
+
+#シェル厚。これはシェルcfの12mm厚
+mdb.models['Model-1'].HomogeneousShellSection(name='cf', preIntegrate=OFF, 
+material=mat, thicknessType=UNIFORM, thickness=tf, 
+thicknessField='', idealization=NO_IDEALIZATION, 
+poissonDefinition=DEFAULT, thicknessModulus=None, temperature=GRADIENT, 
+useDensity=OFF, integrationRule=SIMPSON, numIntPts=5)
+
+#シェル厚。これはシェルcfの12mm厚
+mdb.models['Model-1'].HomogeneousShellSection(name='cfr', preIntegrate=OFF, 
+material=mat, thicknessType=UNIFORM, thickness=tf+tcfr, 
+thicknessField='', idealization=NO_IDEALIZATION, 
+poissonDefinition=DEFAULT, thicknessModulus=None, temperature=GRADIENT, 
+useDensity=OFF, integrationRule=SIMPSON, numIntPts=5)
+
+mdb.models['Model-1'].HomogeneousShellSection(name='cw', preIntegrate=OFF, 
+material=mat, thicknessType=UNIFORM, thickness=tw, 
+thicknessField='', idealization=NO_IDEALIZATION, 
+poissonDefinition=DEFAULT, thicknessModulus=None, temperature=GRADIENT, 
+useDensity=OFF, integrationRule=SIMPSON, numIntPts=5)
+
+mdb.models['Model-1'].HomogeneousShellSection(name='cwr', preIntegrate=OFF, 
+material=mat, thicknessType=UNIFORM, thickness=tw+2*tcwr, 
+thicknessField='', idealization=NO_IDEALIZATION, 
+poissonDefinition=DEFAULT, thicknessModulus=None, temperature=GRADIENT, 
+useDensity=OFF, integrationRule=SIMPSON, numIntPts=5)
+
+
+#材料の割り当て。パートモジュールで割り当てた集合に材料を割り当てていくつもり。
+
+
+#柱フランジの割り当て
+p = mdb.models['Model-1'].parts[cpartname]
+f = p.faces
+faces = f.getSequenceFromMask(mask=('[#db6db60 #3c0 ]', ), )
+region = regionToolset.Region(faces=faces)
+p = mdb.models['Model-1'].parts[cpartname]
+p.SectionAssignment(region=region, sectionName='cf', offset=0.0, 
+offsetType=MIDDLE_SURFACE, offsetField='', 
+thicknessAssignment=FROM_SECTION)
+
+
+#柱フランジ補強板の割り当て
+p = mdb.models['Model-1'].parts[cpartname]
+f = p.faces
+faces = f.getSequenceFromMask(mask=('[#2492490 ]', ), )
+region = regionToolset.Region(faces=faces)
+p = mdb.models['Model-1'].parts[cpartname]
+p.SectionAssignment(region=region, sectionName='cfr', offset=0.0, 
+offsetType=MIDDLE_SURFACE, offsetField='', 
+thicknessAssignment=FROM_SECTION)
+
+
+
+#柱ウェブの割り当て
+p = mdb.models['Model-1'].parts[cpartname]
+f = p.faces
+faces = f.getSequenceFromMask(mask=('[#b000000f #19 ]', ), )
+region = regionToolset.Region(faces=faces)
+p = mdb.models['Model-1'].parts[cpartname]
+p.SectionAssignment(region=region, sectionName='cw', offset=0.0, 
+offsetType=MIDDLE_SURFACE, offsetField='', 
+thicknessAssignment=FROM_SECTION)
+
+#柱ウェブ補強板の割り当て
+p = mdb.models['Model-1'].parts[cpartname]
+f = p.faces
+faces = f.getSequenceFromMask(mask=('[#40000000 #26 ]', ), )
+region = regionToolset.Region(faces=faces)
+p = mdb.models['Model-1'].parts[cpartname]
+p.SectionAssignment(region=region, sectionName='cwr', offset=0.0, 
+offsetType=MIDDLE_SURFACE, offsetField='', 
+thicknessAssignment=FROM_SECTION)
+
+
+
+#-------------------------------------------------------------------------------------------
+
+#メッシュの作成
+#メッシュ特性の割り当て
+p = mdb.models['Model-1'].parts[cpartname]
+f = p.faces
+pickedRegions = f.getSequenceFromMask(mask=('[#2cb21b22 #88 ]', ), )
+p.setMeshControls(regions=pickedRegions, elemShape=QUAD, technique=STRUCTURED)
+p = mdb.models['Model-1'].parts[cpartname]
+f = p.faces
+pickedRegions = f.getSequenceFromMask(mask=('[#d34de4dd #377 ]', ), )
+p.setMeshControls(regions=pickedRegions, elemShape=TRI, allowMapped=False)
+
+p = mdb.models['Model-1'].parts[cpartname]
+f = p.faces
+pickedRegions = f.getSequenceFromMask(mask=('[#4101102 ]', ), )
+p.setMeshControls(regions=pickedRegions, elemShape=QUAD_DOMINATED)
+
+
+
+#全体シード
+p = mdb.models['Model-1'].parts[cpartname]
+p.seedPart(size=25.0, deviationFactor=0.1, minSizeFactor=0.1)
+
+
+
+#部分シード
+p = mdb.models['Model-1'].parts[cpartname]
+e = p.edges
+pickedEdges = e.getSequenceFromMask(mask=(
+'[#f80 #0 #e00 #70000000 #0 #3800000 #0', ' #e000 ]', ), )
+p.seedEdgeBySize(edges=pickedEdges, size=200.0, deviationFactor=0.1, 
+constraint=FINER)
+
+p = mdb.models['Model-1'].parts[cpartname]
+e = p.edges
+pickedEdges1 = e.getSequenceFromMask(mask=('[#300000 #0:3 #40 #0:3 #3400 ]', ), )
+p.seedEdgeByBias(biasMethod=SINGLE, end1Edges=pickedEdges1, minSize=20.0, 
+maxSize=200.0, constraint=FINER)
+
+
+#メッシュの実行
+p = mdb.models['Model-1'].parts[cpartname]
+p.generateMesh()
+
+
+#サーフェスの設定
+p = mdb.models['Model-1'].parts[cpartname]
+s = p.edges
+side1Edges = s.getSequenceFromMask(mask=('[#0:7 #80000000 #383 ]', ), )
+p.Surface(side1Edges=side1Edges, name='s0')
+p = mdb.models['Model-1'].parts[cpartname]
+s = p.edges
+side1Edges = s.getSequenceFromMask(mask=('[#0:7 #1c00000 #1c ]', ), )
+p.Surface(side1Edges=side1Edges, name='s1')
+
+p = mdb.models['Model-1'].parts[cpartname]
+s = p.edges
+side1Edges = s.getSequenceFromMask(mask=('[#0:2 #2 #2000000 #0 #20000 #0 #300080 ]', ), )
+p.Surface(side1Edges=side1Edges, name='s2')
+

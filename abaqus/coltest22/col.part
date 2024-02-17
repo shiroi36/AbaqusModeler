@@ -1,0 +1,527 @@
+
+#-------------------------------------------------------------------------------------------
+#パートモジュール
+#スケッチの単なる押し出し。ここではtest00スケッチ3000mm押し出している。
+
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=200.0)
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=STANDALONE)
+s.sketchOptions.setValues(gridOrigin=(0.0, 0.0))
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches['c00'])
+session.viewports['Viewport: 1'].view.fitView()
+p = mdb.models['Model-1'].Part(name=cpartname, dimensionality=THREE_D, 
+type=DEFORMABLE_BODY)
+p = mdb.models['Model-1'].parts[cpartname]
+p.BaseSolidExtrude(sketch=s, depth=lc)
+s.unsetPrimaryObject()
+p = mdb.models['Model-1'].parts[cpartname]
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+del mdb.models['Model-1'].sketches['__profile__']
+
+
+
+
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
+e, v1, d2 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v1[1], normal=e[4], cells=pickedCells)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#2 ]', ), )
+e1, v2, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v2[32], normal=e1[43], 
+cells=pickedCells)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#8 ]', ), )
+e, v1, d2 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v1[40], normal=e[62], 
+cells=pickedCells)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#10 ]', ), )
+e1, v2, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v2[4], normal=e1[4], cells=pickedCells)
+
+
+
+
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#20 ]', ), )
+e, v, d = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v[5], normal=e[18], cells=pickedCells)
+
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#4 ]', ), )
+e1, v1, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v1[25], normal=e1[25], 
+cells=pickedCells)
+
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#88 ]', ), )
+e, v, d = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v[21], normal=e[67], cells=pickedCells)
+
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#220 ]', ), )
+e1, v1, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v1[30], normal=e1[59], 
+cells=pickedCells)
+
+
+
+#-------------------------------------------------------------------------------------------
+#データム軸の作成
+p = mdb.models['Model-1'].parts['col']
+p.deleteFeatures(('Datum axis-3', 'Datum axis-2', 'Datum axis-1', ))
+p = mdb.models['Model-1'].parts['col']
+p.DatumAxisByPrincipalAxis(principalAxis=XAXIS)
+p = mdb.models['Model-1'].parts['col']
+p.DatumAxisByPrincipalAxis(principalAxis=YAXIS)
+p = mdb.models['Model-1'].parts['col']
+p.DatumAxisByPrincipalAxis(principalAxis=ZAXIS)
+
+p = mdb.models['Model-1'].parts['col']
+p.DatumPlaneByPrincipalPlane(principalPlane=XZPLANE, offset=h/2)
+p = mdb.models['Model-1'].parts['col']
+p.DatumPlaneByPrincipalPlane(principalPlane=YZPLANE, offset=bc/2)
+
+
+#-------------------------------------------------------------------------------------------
+#フランジ切り取り c01
+
+p = mdb.models['Model-1'].parts['col']
+e, d = p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=d[13], sketchUpEdge=e[102], 
+sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(0.0, h/2, 
+lc/2))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=4999.83, gridSpacing=124.99, transform=t)
+g, v, d1, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts['col']
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches['c01'])
+session.viewports['Viewport: 1'].view.fitView()
+p = mdb.models['Model-1'].parts['col']
+e1, d2 = p.edges, p.datums
+p.CutExtrude(sketchPlane=d2[13], sketchUpEdge=e1[102], sketchPlaneSide=SIDE1, 
+sketchOrientation=RIGHT, sketch=s, depth=100.0,  flipExtrudeDirection=OFF)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+
+#-------------------------------------------------------------------------------------------
+#ウェブ孔あけ
+p = mdb.models['Model-1'].parts['col']
+e, d1 = p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=d1[14], sketchUpEdge=e[232], 
+sketchPlaneSide=SIDE1, sketchOrientation=RIGHT, origin=(bc/2, 0.0, 
+lc/2))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=4999.83, gridSpacing=124.99, transform=t)
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts['col']
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches['c03'])
+session.viewports['Viewport: 1'].view.fitView()
+p = mdb.models['Model-1'].parts['col']
+e1, d2 = p.edges, p.datums
+p.CutExtrude(sketchPlane=d2[14], sketchUpEdge=e1[232], sketchPlaneSide=SIDE1, 
+sketchOrientation=RIGHT, sketch=s, flipExtrudeDirection=OFF)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+
+
+#-------------------------------------------------------------------------------------------
+#ウェブスケッチ
+
+p = mdb.models['Model-1'].parts['col']
+f, e, d1 = p.faces, p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=d1[14], sketchUpEdge=e[256], 
+sketchPlaneSide=SIDE1, origin=(bc/2, 0.0, lc/2))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=10833.28, gridSpacing=270.83, transform=t)
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts['col']
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches['c04'])
+p = mdb.models['Model-1'].parts['col']
+f = p.faces
+pickedFaces = f.getSequenceFromMask(mask=(
+'[#ffffffff #bfffffff #7ffddb77 #2ffffcf ]', ), )
+f1, e1, d2 = p.faces, p.edges, p.datums
+p.PartitionFaceBySketchThruAll(sketchPlane=d2[14], sketchUpEdge=e1[256], 
+faces=pickedFaces, sketchPlaneSide=SIDE1, sketch=s)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+
+
+#-------------------------------------------------------------------------------------------
+#ウェブパーテーション
+
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#40 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[218], )
+p.PartitionCellByExtrudeEdge(line=e[143], cells=pickedCells, edges=pickedEdges, 
+sense=FORWARD)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#80 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[197], )
+p.PartitionCellByExtrudeEdge(line=e1[145], cells=pickedCells, 
+edges=pickedEdges, sense=FORWARD)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#100 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[199], )
+p.PartitionCellByExtrudeEdge(line=e[147], cells=pickedCells, edges=pickedEdges, 
+sense=FORWARD)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#200 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[217], )
+p.PartitionCellByExtrudeEdge(line=e1[149], cells=pickedCells, 
+edges=pickedEdges, sense=FORWARD)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#400 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[202], )
+p.PartitionCellByExtrudeEdge(line=e[151], cells=pickedCells, edges=pickedEdges, 
+sense=FORWARD)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#800 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[216], )
+p.PartitionCellByExtrudeEdge(line=e1[153], cells=pickedCells, 
+edges=pickedEdges, sense=FORWARD)
+session.viewports['Viewport: 1'].view.setValues(nearPlane=7601.25, 
+farPlane=10485.9, cameraPosition=(7951.81, 1814.43, 6158.57), 
+cameraTarget=(69.4556, -11.4825, 2154.26))
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1000 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[206], )
+p.PartitionCellByExtrudeEdge(line=e[155], cells=pickedCells, edges=pickedEdges, 
+sense=FORWARD)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[216], )
+p.PartitionCellByExtrudeEdge(line=e1[157], cells=pickedCells, 
+edges=pickedEdges, sense=FORWARD)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#2 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[215], )
+p.PartitionCellByExtrudeEdge(line=e[159], cells=pickedCells, edges=pickedEdges, 
+sense=FORWARD)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#4 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[210], )
+p.PartitionCellByExtrudeEdge(line=e1[161], cells=pickedCells, 
+edges=pickedEdges, sense=FORWARD)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[214], )
+p.PartitionCellByExtrudeEdge(line=e[163], cells=pickedCells, edges=pickedEdges, 
+sense=FORWARD)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#2 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[213], )
+p.PartitionCellByExtrudeEdge(line=e1[165], cells=pickedCells, 
+edges=pickedEdges, sense=FORWARD)
+session.viewports['Viewport: 1'].view.setValues(nearPlane=7601.25, 
+farPlane=10485.9, width=728.639, height=380.473, cameraPosition=(
+7952.81, 1765.72, 6178.81), cameraTarget=(70.4574, -60.1973, 2174.5))
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1fbf001 ]', ), )
+e, v1, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v1[36], normal=e[48], 
+cells=pickedCells)
+
+
+#-------------------------------------------------------------------------------------------
+#フランジスケッチ
+
+mdb.models['Model-1'].ConstrainedSketch(gridSpacing=124.18, name='__profile__', 
+sheetSize=4967.24, transform=
+mdb.models['Model-1'].parts['col'].MakeSketchTransform(
+sketchPlane=mdb.models['Model-1'].parts['col'].datums[13], 
+sketchPlaneSide=SIDE1, 
+sketchUpEdge=mdb.models['Model-1'].parts['col'].edges[94], 
+sketchOrientation=RIGHT, origin=(0.0, 220.0, lc/2)))
+mdb.models['Model-1'].parts['col'].projectReferencesOntoSketch(filter=
+COPLANAR_EDGES, sketch=mdb.models['Model-1'].sketches['__profile__'])
+mdb.models['Model-1'].sketches['__profile__'].retrieveSketch(sketch=
+mdb.models['Model-1'].sketches['c02'])
+mdb.models['Model-1'].parts['col'].PartitionFaceBySketchThruAll(faces=
+mdb.models['Model-1'].parts['col'].faces.getSequenceFromMask((
+'[#fffffffb #ffff7fff #ffffffff:4 #2bffffff #72724993 #3fff8 ]', ), ), 
+sketch=mdb.models['Model-1'].sketches['__profile__'], sketchPlane=
+mdb.models['Model-1'].parts['col'].datums[13], sketchPlaneSide=SIDE1, 
+sketchUpEdge=mdb.models['Model-1'].parts['col'].edges[94])
+del mdb.models['Model-1'].sketches['__profile__']
+# Save by 14analysis on 2018_10_03-18.30.35; build 6.12-1 2012_03_13-20.23.18 119612
+
+
+
+#-------------------------------------------------------------------------------------------
+#フランジパーテーション
+
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#5a002491 #1d ]', ), )
+e, v1, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v1[108], normal=e[168], 
+cells=pickedCells)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#36dc000 #44480 ]', ), )
+e1, v2, d2 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v2[32], normal=e1[45], 
+cells=pickedCells)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#30001349 #8800064 ]', ), )
+e, v1, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(normal=e[332], cells=pickedCells, 
+point=p.InterestingPoint(edge=e[332], rule=MIDDLE))
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#221253c #200 #110 ]', ), )
+e1, v2, d2 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(normal=e1[50], cells=pickedCells, 
+point=p.InterestingPoint(edge=e1[50], rule=MIDDLE))
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#0 #4112be00 #1802000 ]', ), )
+e, v1, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(normal=e[358], cells=pickedCells, 
+point=p.InterestingPoint(edge=e[358], rule=MIDDLE))
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#c6d #16400000 #20 #10 ]', ), )
+e1, v2, d2 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(normal=e1[42], cells=pickedCells, 
+point=p.InterestingPoint(edge=e1[42], rule=MIDDLE))
+
+
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#0 #cb600000 #988000 #80100 ]', ), 
+)
+e1, v2, d2 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v2[262], normal=e1[509], 
+cells=pickedCells)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#2b88 #0 #40000120 #800044 #4 ]', 
+), )
+e, v1, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v1[95], normal=e[149], 
+cells=pickedCells)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#5601872 #0:2 #88000 #8000 ]', ), )
+e1, v2, d2 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v2[78], normal=e1[121], 
+cells=pickedCells)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#81dc5 #a8 #0:2 #1 ]', ), )
+e, v1, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v1[85], normal=e[44], 
+cells=pickedCells)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#0:3 #6000000 #82035 #156 ]', ), )
+e1, v2, d2 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v2[438], normal=e1[929], 
+cells=pickedCells)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#2169 #0:3 #128100 #290000 ]', ), )
+e, v1, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v1[95], normal=e[149], 
+cells=pickedCells)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#4052370 #0:4 #20000002 #5 ]', ), )
+e1, v2, d2 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v2[79], normal=e1[122], 
+cells=pickedCells)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#a0401e9b #0:5 #400 ]', ), )
+e, v1, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v1[78], normal=e[44], 
+cells=pickedCells)
+
+
+
+#-------------------------------------------------------------------------------------------
+#メッシュ
+elemType1 = mesh.ElemType(elemCode=C3D8R, elemLibrary=EXPLICIT, 
+kinematicSplit=AVERAGE_STRAIN, secondOrderAccuracy=OFF, 
+hourglassControl=DEFAULT, distortionControl=DEFAULT)
+elemType2 = mesh.ElemType(elemCode=C3D6, elemLibrary=EXPLICIT, 
+secondOrderAccuracy=OFF, distortionControl=DEFAULT)
+elemType3 = mesh.ElemType(elemCode=C3D4, elemLibrary=EXPLICIT, 
+secondOrderAccuracy=OFF, distortionControl=DEFAULT)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+cells = c.getSequenceFromMask(mask=('[#ffffffff:7 #f ]', ), )
+pickedRegions =(cells, )
+p.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2, 
+elemType3))
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedRegions = c.getSequenceFromMask(mask=('[#ffffffff:7 #f ]', ), )
+p.setMeshControls(regions=pickedRegions, elemShape=TET, technique=FREE, 
+algorithm=NON_DEFAULT, allowMapped=False)
+elemType1 = mesh.ElemType(elemCode=UNKNOWN_HEX, elemLibrary=EXPLICIT)
+elemType2 = mesh.ElemType(elemCode=UNKNOWN_WEDGE, elemLibrary=EXPLICIT)
+elemType3 = mesh.ElemType(elemCode=C3D10M, elemLibrary=EXPLICIT)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+cells = c.getSequenceFromMask(mask=('[#ffffffff:7 #f ]', ), )
+pickedRegions =(cells, )
+p.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2, 
+elemType3))
+
+
+
+
+elemType1 = mesh.ElemType(elemCode=C3D8R, elemLibrary=EXPLICIT)
+elemType2 = mesh.ElemType(elemCode=C3D6, elemLibrary=EXPLICIT)
+elemType3 = mesh.ElemType(elemCode=C3D4, elemLibrary=EXPLICIT)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+cells = c.getSequenceFromMask(mask=(
+'[#1040a02 #c450210 #80000494 #40240202 #32810216 #6004c128 #80000c07', 
+' #b ]', ), )
+pickedRegions =(cells, )
+p.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2, 
+elemType3))
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+pickedRegions = c.getSequenceFromMask(mask=(
+'[#1040a02 #c450210 #80000494 #40240202 #32810216 #6004c128 #80000c07', 
+' #b ]', ), )
+p.setMeshControls(regions=pickedRegions, elemShape=HEX, technique=STRUCTURED)
+
+p = mdb.models['Model-1'].parts['col']
+p.seedPart(size=30.0, deviationFactor=0.1, minSizeFactor=0.1)
+p = mdb.models['Model-1'].parts['col']
+e = p.edges
+pickedEdges = e.getSequenceFromMask(mask=(
+'[#0:18 #7e00 #0:2 #7e0 #0:16 #703f038 ]', ), )
+p.seedEdgeByNumber(edges=pickedEdges, number=8, constraint=FINER)
+session.viewports['Viewport: 1'].view.setValues(width=806.511, height=422.82, 
+cameraPosition=(10833.3, 52.2418, 1990.17), cameraTarget=(0, 52.2418, 
+1990.17))
+p = mdb.models['Model-1'].parts['col']
+e = p.edges
+pickedEdges = e.getSequenceFromMask(mask=(
+'[#0:5 #1f8000 #0:2 #7e00000 #0:29 #fc0fc0 ]', ), )
+p.seedEdgeByNumber(edges=pickedEdges, number=8, constraint=FINER)
+
+p = mdb.models['Model-1'].parts['col']
+p.generateMesh()
+
+
+elemType1 = mesh.ElemType(elemCode=C3D8R, elemLibrary=EXPLICIT, 
+kinematicSplit=AVERAGE_STRAIN, secondOrderAccuracy=OFF, 
+hourglassControl=DEFAULT, distortionControl=DEFAULT)
+elemType2 = mesh.ElemType(elemCode=C3D6, elemLibrary=EXPLICIT, 
+secondOrderAccuracy=OFF, distortionControl=DEFAULT)
+elemType3 = mesh.ElemType(elemCode=C3D4, elemLibrary=EXPLICIT, 
+secondOrderAccuracy=OFF, distortionControl=DEFAULT)
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+cells = c.getSequenceFromMask(mask=('[#ffffffff:7 #f ]', ), )
+pickedRegions =(cells, )
+p.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2, 
+elemType3))
+#-------------------------------------------------------------------------------------------
+#サーフェス
+
+
+p = mdb.models['Model-1'].parts['col']
+s = p.faces
+side1Faces = s.getSequenceFromMask(mask=('[#0:26 #fc0000 ]', ), )
+p.Surface(side1Faces=side1Faces, name='c00')
+p = mdb.models['Model-1'].parts['col']
+s = p.faces
+side1Faces = s.getSequenceFromMask(mask=('[#0:26 #7038000 ]', ), )
+p.Surface(side1Faces=side1Faces, name='c01')
+
+p = mdb.models['Model-1'].parts['col']
+s = p.faces
+side1Faces = s.getSequenceFromMask(mask=('[#0:28 #91422000 #300c24 #80 ]', ), )
+p.Surface(side1Faces=side1Faces, name='e00')
+p = mdb.models['Model-1'].parts['col']
+s = p.faces
+side1Faces = s.getSequenceFromMask(mask=('[#0:28 #22248000 #c6049 #100 ]', ), )
+p.Surface(side1Faces=side1Faces, name='e01')
+
+
+p = mdb.models['Model-1'].parts['col']
+s = p.faces
+side1Faces = s.getSequenceFromMask(mask=('[#0:26 #fc0000 ]', ), )
+p.Surface(side1Faces=side1Faces, name='c00')
+p = mdb.models['Model-1'].parts['col']
+s = p.faces
+side1Faces = s.getSequenceFromMask(mask=('[#0:26 #7038000 ]', ), )
+p.Surface(side1Faces=side1Faces, name='c01')
+
+p = mdb.models['Model-1'].parts['col']
+s = p.faces
+side1Faces = s.getSequenceFromMask(mask=('[#0:28 #91422000 #300c24 #80 ]', ), )
+p.Surface(side1Faces=side1Faces, name='e00')
+p = mdb.models['Model-1'].parts['col']
+s = p.faces
+side1Faces = s.getSequenceFromMask(mask=('[#0:28 #22248000 #c6049 #100 ]', ), )
+p.Surface(side1Faces=side1Faces, name='e01')
+
+
+#-------------------------------------------------------------------------------------------
+#材料特性
+p = mdb.models['Model-1'].parts['col']
+c = p.cells
+cells = c.getSequenceFromMask(mask=('[#ffffffff:7 #f ]', ), )
+region = regionToolset.Region(cells=cells)
+p = mdb.models['Model-1'].parts['col']
+p.SectionAssignment(region=region, sectionName='sm490flat', offset=0.0, 
+offsetType=MIDDLE_SURFACE, offsetField='', 
+thicknessAssignment=FROM_SECTION)
+
+

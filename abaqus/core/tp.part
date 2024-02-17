@@ -1,0 +1,225 @@
+
+#-------------------------------------------------------------------------------------------
+
+s1 = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=200.0)
+g, v, d, c = s1.geometry, s1.vertices, s1.dimensions, s1.constraints
+s1.setPrimaryObject(option=STANDALONE)
+s1.sketchOptions.setValues(gridOrigin=(0.0, 200.0))
+s1.retrieveSketch(sketch=mdb.models['Model-1'].sketches[s00])
+session.viewports['Viewport: 1'].view.fitView()
+p = mdb.models['Model-1'].Part(name=cpartname, dimensionality=THREE_D, 
+type=DEFORMABLE_BODY)
+p = mdb.models['Model-1'].parts[cpartname]
+p.BaseSolidExtrude(sketch=s1, depth=ttp)
+s1.unsetPrimaryObject()
+p = mdb.models['Model-1'].parts[cpartname]
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+del mdb.models['Model-1'].sketches['__profile__']
+p = mdb.models['Model-1'].parts[cpartname]
+f1, e1, d2 = p.faces, p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=f1[16], sketchUpEdge=e1[4], 
+sketchPlaneSide=SIDE1, origin=(0.0, 0.0, 0.0))
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=1000.79, gridSpacing=25.01, transform=t)
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts[cpartname]
+p.projectReferencesOntoSketch(sketch=s, filter=COPLANAR_EDGES)
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches[s11])
+session.viewports['Viewport: 1'].view.fitView()
+p = mdb.models['Model-1'].parts[cpartname]
+f = p.faces
+pickedFaces = f.getSequenceFromMask(mask=('[#10000 ]', ), )
+e, d1 = p.edges, p.datums
+p.PartitionFaceBySketch(sketchUpEdge=e[4], faces=pickedFaces, sketch=s)
+s.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+
+
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
+e1, v2, d2 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v2[24], normal=e1[32], 
+cells=pickedCells)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#2 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[47], )
+p.PartitionCellByExtrudeEdge(line=e[51], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#4 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[47], )
+p.PartitionCellByExtrudeEdge(line=e1[52], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#8 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[47], )
+p.PartitionCellByExtrudeEdge(line=e[53], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#10 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[47], )
+p.PartitionCellByExtrudeEdge(line=e1[54], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#20 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[47], )
+p.PartitionCellByExtrudeEdge(line=e[55], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#40 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[47], )
+p.PartitionCellByExtrudeEdge(line=e1[56], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#80 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[37], )
+p.PartitionCellByExtrudeEdge(line=e[57], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[40], )
+p.PartitionCellByExtrudeEdge(line=e1[58], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[43], )
+p.PartitionCellByExtrudeEdge(line=e[59], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[46], )
+p.PartitionCellByExtrudeEdge(line=e1[60], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[49], )
+p.PartitionCellByExtrudeEdge(line=e[61], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#2 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[52], )
+p.PartitionCellByExtrudeEdge(line=e1[62], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts[cpartname]
+p.DatumPointByCoordinate(coords=(0.0, 0.0, 0.0))
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
+e, v1, d1 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(normal=e[39], cells=pickedCells, 
+point=p.InterestingPoint(edge=e[39], rule=MIDDLE))
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#2000 ]', ), )
+e1, v2, d2 = p.edges, p.vertices, p.datums
+p.PartitionCellByPlanePointNormal(point=v2[2], normal=e1[15], 
+cells=pickedCells)
+
+#--------------------------材料の設定----------------------
+
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+cells = c.getSequenceFromMask(mask=('[#ffff ]', ), )
+region = regionToolset.Region(cells=cells)
+p = mdb.models['Model-1'].parts[cpartname]
+p.SectionAssignment(region=region, sectionName='sm490', offset=0.0, 
+offsetType=MIDDLE_SURFACE, offsetField='', 
+thicknessAssignment=FROM_SECTION)
+
+
+#--------------------------メッシュの設定----------------------
+
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedRegions = c.getSequenceFromMask(mask=('[#ffff ]', ), )
+p.setMeshControls(regions=pickedRegions, elemShape=TET, technique=FREE, allowMapped=False)
+elemType1 = mesh.ElemType(elemCode=C3D20R)
+elemType2 = mesh.ElemType(elemCode=C3D15)
+elemType3 = mesh.ElemType(elemCode=C3D10)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+cells = c.getSequenceFromMask(mask=('[#ffff ]', ), )
+pickedRegions =(cells, )
+p.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2, 
+elemType3))
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+pickedRegions = c.getSequenceFromMask(mask=('[#4001 ]', ), )
+p.setMeshControls(regions=pickedRegions, elemShape=HEX, technique=STRUCTURED)
+elemType1 = mesh.ElemType(elemCode=C3D8R)
+elemType2 = mesh.ElemType(elemCode=C3D6)
+elemType3 = mesh.ElemType(elemCode=C3D4)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+cells = c.getSequenceFromMask(mask=('[#4001 ]', ), )
+pickedRegions =(cells, )
+p.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2, 
+elemType3))
+p = mdb.models['Model-1'].parts[cpartname]
+p.seedPart(size=40.0, deviationFactor=0.1, minSizeFactor=0.1)
+p = mdb.models['Model-1'].parts[cpartname]
+e = p.edges
+pickedEdges = e.getSequenceFromMask(mask=('[#1800fff #50000010 #1c000 ]', ), )
+p.seedEdgeBySize(edges=pickedEdges, size=20.0, deviationFactor=0.1, 
+minSizeFactor=0.1, constraint=FINER)
+p = mdb.models['Model-1'].parts[cpartname]
+e = p.edges
+pickedEdges = e.getSequenceFromMask(mask=('[#1800fff #50000010 #1c000 ]', ), )
+p.seedEdgeBySize(edges=pickedEdges, size=10.0, deviationFactor=0.1, 
+minSizeFactor=0.1, constraint=FINER)
+
+p = mdb.models['Model-1'].parts[cpartname]
+e = p.edges
+pickedEdges = e.getSequenceFromMask(mask=('[#381f8000 #afffffcf #7ff ]', ), )
+p.seedEdgeByNumber(edges=pickedEdges, number=8, constraint=FINER)
+
+p = mdb.models['Model-1'].parts[cpartname]
+p.generateMesh()
+elemType1 = mesh.ElemType(elemCode=C3D8R, elemLibrary=EXPLICIT)
+elemType2 = mesh.ElemType(elemCode=C3D6, elemLibrary=EXPLICIT)
+elemType3 = mesh.ElemType(elemCode=C3D4, elemLibrary=EXPLICIT)
+p = mdb.models['Model-1'].parts[cpartname]
+c = p.cells
+cells = c.getSequenceFromMask(mask=('[#ffff ]', ), )
+pickedRegions =(cells, )
+p.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2, elemType3))
+
+
+
+#サーフェスの設定
+p = mdb.models['Model-1'].parts[cpartname]
+s = p.faces
+side1Faces = s.getSequenceFromMask(mask=('[#0 #aa800000 #2 ]', ), )
+p.Surface(side1Faces=side1Faces, name='b1')
+p = mdb.models['Model-1'].parts[cpartname]
+s = p.faces
+side1Faces = s.getSequenceFromMask(mask=('[#0 #55400000 #1 ]', ), )
+p.Surface(side1Faces=side1Faces, name='b2')
+

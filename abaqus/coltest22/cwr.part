@@ -1,0 +1,136 @@
+
+#-------------------------------------------------------------------------------------------
+#パートモジュール
+
+
+s = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=200.0)
+g, v, d, c = s.geometry, s.vertices, s.dimensions, s.constraints
+s.setPrimaryObject(option=STANDALONE)
+s.sketchOptions.setValues(gridOrigin=(0.0, 0.0))
+s.retrieveSketch(sketch=mdb.models['Model-1'].sketches['cwr'])
+session.viewports['Viewport: 1'].view.fitView()
+session.viewports['Viewport: 1'].view.setValues(width=446.808, height=333.801, 
+cameraPosition=(5.05599, -5.30846, 847.585), cameraTarget=(5.05599, 
+-5.30846, 0))
+p = mdb.models['Model-1'].Part(name=cpartname, dimensionality=THREE_D, 
+type=DEFORMABLE_BODY)
+p = mdb.models['Model-1'].parts[cpartname]
+p.BaseSolidExtrude(sketch=s, depth=tcwr)
+s.unsetPrimaryObject()
+p = mdb.models['Model-1'].parts[cpartname]
+session.viewports['Viewport: 1'].setValues(displayedObject=p)
+del mdb.models['Model-1'].sketches['__profile__']
+p = mdb.models['Model-1'].parts[cpartname]
+f, e, d1 = p.faces, p.edges, p.datums
+
+
+p = mdb.models['Model-1'].parts['cwr']
+f, e1, d2 = p.faces, p.edges, p.datums
+t = p.MakeSketchTransform(sketchPlane=f[10], sketchUpEdge=e1[10], 
+sketchPlaneSide=SIDE1, origin=(0.0, 0.0, 12.0))
+s1 = mdb.models['Model-1'].ConstrainedSketch(name='__profile__', 
+sheetSize=488.85, gridSpacing=12.22, transform=t)
+g, v, d, c = s1.geometry, s1.vertices, s1.dimensions, s1.constraints
+s1.setPrimaryObject(option=SUPERIMPOSE)
+p = mdb.models['Model-1'].parts['cwr']
+p.projectReferencesOntoSketch(sketch=s1, filter=COPLANAR_EDGES)
+s1.retrieveSketch(sketch=mdb.models['Model-1'].sketches['cwr2'])
+session.viewports['Viewport: 1'].view.fitView()
+p = mdb.models['Model-1'].parts['cwr']
+f = p.faces
+pickedFaces = f.getSequenceFromMask(mask=('[#400 ]', ), )
+e, d1 = p.edges, p.datums
+p.PartitionFaceBySketch(sketchUpEdge=e[10], faces=pickedFaces, sketch=s1)
+s1.unsetPrimaryObject()
+del mdb.models['Model-1'].sketches['__profile__']
+p = mdb.models['Model-1'].parts['cwr']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[8], )
+p.PartitionCellByExtrudeEdge(line=e1[20], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts['cwr']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#2 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[11], )
+p.PartitionCellByExtrudeEdge(line=e[28], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts['cwr']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#4 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[16], )
+p.PartitionCellByExtrudeEdge(line=e1[29], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts['cwr']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#8 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[26], )
+p.PartitionCellByExtrudeEdge(line=e[30], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts['cwr']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#1 ]', ), )
+e1, d2 = p.edges, p.datums
+pickedEdges =(e1[21], )
+p.PartitionCellByExtrudeEdge(line=e1[31], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+p = mdb.models['Model-1'].parts['cwr']
+c = p.cells
+pickedCells = c.getSequenceFromMask(mask=('[#2 ]', ), )
+e, d1 = p.edges, p.datums
+pickedEdges =(e[20], )
+p.PartitionCellByExtrudeEdge(line=e[32], cells=pickedCells, edges=pickedEdges, 
+sense=REVERSE)
+
+
+
+#材料特性
+p = mdb.models['Model-1'].parts['cwr']
+c = p.cells
+cells = c.getSequenceFromMask(mask=('[#ffffffff #1fffff ]', ), )
+region = p.Set(cells=cells, name='Set-1')
+p = mdb.models['Model-1'].parts['cwr']
+p.SectionAssignment(region=region, sectionName=mat, offset=0.0, 
+offsetType=MIDDLE_SURFACE, offsetField='', 
+thicknessAssignment=FROM_SECTION)
+p = mdb.models['Model-1'].parts['cwr']
+c = p.cells
+pickedRegions = c.getSequenceFromMask(mask=('[#7f ]', ), )
+p.setMeshControls(regions=pickedRegions, elemShape=TET, technique=FREE, 
+algorithm=NON_DEFAULT, allowMapped=False)
+elemType1 = mesh.ElemType(elemCode=C3D20R)
+elemType2 = mesh.ElemType(elemCode=C3D15)
+elemType3 = mesh.ElemType(elemCode=C3D10)
+p = mdb.models['Model-1'].parts['cwr']
+c = p.cells
+cells = c.getSequenceFromMask(mask=('[#7f ]', ), )
+pickedRegions =(cells, )
+p.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2, 
+elemType3))
+p = mdb.models['Model-1'].parts['cwr']
+p.seedPart(size=25.0, deviationFactor=0.1, minSizeFactor=0.1)
+p = mdb.models['Model-1'].parts['cwr']
+e = p.edges
+pickedEdges = e.getSequenceFromMask(mask=('[#3fffe1f #c ]', ), )
+p.seedEdgeByNumber(edges=pickedEdges, number=8, constraint=FINER)
+p = mdb.models['Model-1'].parts['cwr']
+p.generateMesh()
+elemType1 = mesh.ElemType(elemCode=C3D8R, elemLibrary=EXPLICIT)
+elemType2 = mesh.ElemType(elemCode=C3D6, elemLibrary=EXPLICIT)
+elemType3 = mesh.ElemType(elemCode=C3D4, elemLibrary=EXPLICIT, 
+secondOrderAccuracy=OFF, distortionControl=DEFAULT)
+p = mdb.models['Model-1'].parts['cwr']
+c = p.cells
+cells = c.getSequenceFromMask(mask=('[#7f ]', ), )
+pickedRegions =(cells, )
+p.setElementType(regions=pickedRegions, elemTypes=(elemType1, elemType2, 
+elemType3))
+
+
+
+
