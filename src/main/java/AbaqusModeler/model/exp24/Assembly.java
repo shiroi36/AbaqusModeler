@@ -19,6 +19,7 @@ public class Assembly {
 
         setBeam(txt);
         setColumn(txt);
+        setShearPlate(txt);
 
         setLeftBrackets(txt);
         setRightBrackets(txt);
@@ -36,100 +37,146 @@ public class Assembly {
     private static void setBeam(TXT_OPE txt) {
         Assembler assembler = new Assembler();
         String partName = "beam";
-        String instanceName = "beam";
-        String memo = "beam";
+        String instanceName = "beam-1";
+        String memo = "beam-1";
 
         txt.println(assembler.getInstance(partName, instanceName, memo));
-        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 90));
-        txt.println(assembler.Move(instanceName, new CoordXYZ(0, 100, 0)));
+        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), -90));
+        txt.println(assembler.Move(instanceName, new CoordXYZ(0, -1339, 0)));
     }
 
     private static void setColumn(TXT_OPE txt) {
         Assembler assembler = new Assembler();
         String partName = "column";
-        String instanceName = "column";
-        String memo = "column";
+        String instanceName = "column-1";
+        String memo = "column-1";
 
         txt.println(assembler.getInstance(partName, instanceName, memo));
+        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(0, 1, 0), 90));
+        txt.println(assembler.Move(instanceName, new CoordXYZ(-4852.0 / 2, 0, 0)));
         txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 90));
-        txt.println(assembler.Move(instanceName, new CoordXYZ(0, 100, 0)));
+    }
+
+    private static void setShearPlate(TXT_OPE txt) {
+        Assembler assembler = new Assembler();
+        String partName = "shear_plate";
+        String instanceName = "shear_plate-1";
+        String memo = "shear_plate-1";
+
+        txt.println(assembler.getInstance(partName, instanceName, memo));
+        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 180));
+        txt.println(assembler.Move(instanceName, new CoordXYZ(0, -125, 17.5)));
     }
 
     private static void setLeftBrackets(TXT_OPE txt) {
         Assembler assembler = new Assembler();
         String partName = "r25l";
-        String instanceName = "r25l";
-        String memo = "r25l";
+        String instanceName = "r25l-1";
+        String memo = "r25l-1";
 
         txt.println(assembler.getInstance(partName, instanceName, memo));
-        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 90));
-        txt.println(assembler.Move(instanceName, new CoordXYZ(0, 100, 0)));
+        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(0, 0, 1), 180));
+        txt.println(assembler.Move(instanceName, new CoordXYZ(470, -170, 202.5)));
+
+        instanceName = "r25l-2";
+        memo = "r25l-2";
+
+        txt.println(assembler.getInstance(partName, instanceName, memo));
+        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 180));
+        txt.println(assembler.Move(instanceName, new CoordXYZ(-470, -170, -202.5)));
     }
 
     private static void setRightBrackets(TXT_OPE txt) {
         Assembler assembler = new Assembler();
         String partName = "r25r";
-        String instanceName = "r25r";
-        String memo = "r25r";
+        String instanceName = "r25r-1";
+        String memo = "r25r-1";
 
         txt.println(assembler.getInstance(partName, instanceName, memo));
-        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 90));
-        txt.println(assembler.Move(instanceName, new CoordXYZ(0, 100, 0)));
+        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(0, 0, 1), 180));
+        txt.println(assembler.Move(instanceName, new CoordXYZ(201, -170, 347.5)));
+
+        instanceName = "r25r-2";
+        memo = "r25r-2";
+
+        txt.println(assembler.getInstance(partName, instanceName, memo));
+        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 180));
+        txt.println(assembler.Move(instanceName, new CoordXYZ(-201, -170, -347.5)));
     }
 
     private static void setBeamFlangeBolts(TXT_OPE txt) {
-        Assembler assembler = new Assembler();
-        String partName = "bolt_bf";
-        String instanceName = "bolt_bf";
-        String memo = "bolt_bf";
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                for (int k = 0; k < 6; k++) {
+                    Assembler assembler = new Assembler();
+                    int idx = i * 12 + j * 6 + k + 1;
+                    String partName = "bolt_bf";
+                    String instanceName = "bolt_bf-" + idx;
+                    String memo = "bolt_bf-1" + idx;
 
-        txt.println(assembler.getInstance(partName, instanceName, memo));
-        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 90));
-        txt.println(assembler.Move(instanceName, new CoordXYZ(0, 100, 0)));
+                    txt.println(assembler.getInstance(partName, instanceName, memo));
+                    txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(0, 1, 0), 90));
+                    txt.println(assembler.Move(instanceName, new CoordXYZ(212 - i * 495, -211 - k * 60, 84.5 - j * 169)));
+                }
+            }
+        }
     }
 
     private static void setBeamWebBolts(TXT_OPE txt) {
-        Assembler assembler = new Assembler();
-        String partName = "bolt_bw";
-        String instanceName = "bolt_bw";
-        String memo = "bolt_bw";
+        for (int i = 0; i < 5; i++) {
+            Assembler assembler = new Assembler();
+            int idx = i + 1;
+            String partName = "bolt_bw";
+            String instanceName = "bolt_bw-" + idx;
+            String memo = "bolt_bw-" + idx;
 
-        txt.println(assembler.getInstance(partName, instanceName, memo));
-        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 90));
-        txt.println(assembler.Move(instanceName, new CoordXYZ(0, 100, 0)));
+            txt.println(assembler.getInstance(partName, instanceName, memo));
+            txt.println(assembler.Move(instanceName, new CoordXYZ(120 - i * 60, -185, -19.5)));
+        }
     }
 
     private static void setColumnWebBolts(TXT_OPE txt) {
-        Assembler assembler = new Assembler();
-        String partName = "bolt_cw";
-        String instanceName = "bolt_cw";
-        String memo = "bolt_cw";
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 2; j++) {
+                for (int k = 0; k < 3; k++) {
+                    Assembler assembler = new Assembler();
+                    int idx = i * 6 + 3 * j + k + 1;
+                    String partName = "bolt_cw";
+                    String instanceName = "bolt_cw-" + idx;
+                    String memo = "bolt_cw-" + idx;
 
-        txt.println(assembler.getInstance(partName, instanceName, memo));
-        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 90));
-        txt.println(assembler.Move(instanceName, new CoordXYZ(0, 100, 0)));
+                    txt.println(assembler.getInstance(partName, instanceName, memo));
+                    txt.println(assembler.Move(instanceName, new CoordXYZ(339 - i * 618 - j * 60, 60 - k * 60, -55.5)));
+                }
+            }
+        }
     }
 
     private static void setColumnFlangePlates(TXT_OPE txt) {
-        Assembler assembler = new Assembler();
-        String partName = "cfr";
-        String instanceName = "cfr";
-        String memo = "cfr";
+        for (int i = 0; i < 2; i++) {
+            Assembler assembler = new Assembler();
+            int idx = i + 1;
+            String partName = "cfr";
+            String instanceName = "cfr-" + i;
+            String memo = "cfr-" + i;
 
-        txt.println(assembler.getInstance(partName, instanceName, memo));
-        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 90));
-        txt.println(assembler.Move(instanceName, new CoordXYZ(0, 100, 0)));
+            txt.println(assembler.getInstance(partName, instanceName, memo));
+            txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 90));
+            txt.println(assembler.Move(instanceName, new CoordXYZ(319 - i * 638, -125, 0)));
+        }
     }
 
     private static void setColumnWebPlates(TXT_OPE txt) {
-        Assembler assembler = new Assembler();
-        String partName = "cwr";
-        String instanceName = "cwr";
-        String memo = "cwr";
+        for (int i = 0; i < 2; i++) {
+            Assembler assembler = new Assembler();
+            int idx = i + 1;
+            String partName = "cwr1";
+            String instanceName = "cwr1-" + idx;
+            String memo = "cwr1-" + idx;
 
-        txt.println(assembler.getInstance(partName, instanceName, memo));
-        txt.println(assembler.Rotate(instanceName, new CoordXYZ(0, 0, 0), new CoordXYZ(1, 0, 0), 90));
-        txt.println(assembler.Move(instanceName, new CoordXYZ(0, 100, 0)));
+            txt.println(assembler.getInstance(partName, instanceName, memo));
+            txt.println(assembler.Move(instanceName, new CoordXYZ(0, 0, 4.5 - i * 21)));
+        }
     }
 
     private static void example() {
